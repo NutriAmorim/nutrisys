@@ -1,0 +1,201 @@
+=============================================================================
+                    SISTEMA NUTRISYS - PRONTUÁRIO DIGITAL
+=============================================================================
+
+✅ O QUE FOI CRIADO:
+
+Um sistema web completo baseado na SUA ficha de anamnese real!
+
+📋 FUNCIONALIDADES:
+
+1. Formulário web organizado em 7 ABAS:
+   - Identificação
+   - Histórico Social e Familiar  
+   - Objetivo Principal
+   - Dados Clínicos (sintomas + outros)
+   - Ficha Antropométrica completa
+   - Diagnóstico Nutricional
+   - Orientações e Devolutivas
+
+2. Cálculos automáticos:
+   ✅ IMC (calculado automaticamente)
+   ✅ Relação Cintura/Quadril
+   ✅ Idade (baseada na data de nascimento)
+
+3. Geração de documentos:
+   ✅ PDF profissional
+   ✅ WORD (.docx) formatado como sua ficha original
+
+=============================================================================
+                         COMO INSTALAR E USAR
+=============================================================================
+
+INSTALAÇÃO RÁPIDA (Windows):
+1. Descompacte a pasta nutri_app
+2. Abra o terminal/CMD na pasta
+3. Execute: setup.bat
+4. Siga as instruções
+5. Acesse: http://127.0.0.1:8000
+
+INSTALAÇÃO RÁPIDA (Linux/Mac):
+1. Descompacte a pasta nutri_app
+2. Abra o terminal na pasta
+3. Execute: ./setup.sh
+4. Siga as instruções
+5. Acesse: http://127.0.0.1:8000
+
+INSTALAÇÃO MANUAL:
+Veja o arquivo INSTALL.md para instruções detalhadas
+
+=============================================================================
+                              COMO USAR
+=============================================================================
+
+1. CRIAR NOVO PRONTUÁRIO:
+   - Acesse http://127.0.0.1:8000
+   - Preencha as abas conforme necessário
+   - Clique em "Salvar e Gerar PDF"
+   - ✅ Word e PDF serão gerados automaticamente!
+
+2. VISUALIZAR PRONTUÁRIOS:
+   - Clique em "Minhas Fichas"
+   - Veja todos os prontuários criados
+   - Baixe PDF ou Word a qualquer momento
+
+3. BAIXAR DOCUMENTOS:
+   - Na visualização do prontuário:
+     * Botão "Baixar PDF" → Gera/baixa PDF
+     * Botão "Baixar Word" → Gera/baixa DOCX
+   - Os arquivos ficam salvos em media/pdfs e media/docs
+
+=============================================================================
+                         CAMPOS DO FORMULÁRIO
+=============================================================================
+
+✅ IDENTIFICAÇÃO:
+- Data da consulta, Nome, Endereço, Bairro
+- Email, Celular, Profissão
+- Data de nascimento, Idade (calculada), Sexo
+- Motivo da consulta, Observações iniciais
+
+✅ HISTÓRICO SOCIAL:
+- Estado civil, Composição familiar
+- Quem compra/prepara alimentos
+- Frequência de compra
+- Com quem faz refeições
+- Bebidas alcoólicas, Tabagismo
+
+✅ OBJETIVO:
+- Por que procurou atendimento
+- Meta pessoal
+
+✅ DADOS CLÍNICOS:
+- 15 sintomas com checkboxes + observações:
+  * Vômito, Náusea, Mastigação, Deglutição
+  * Digestão, Pirose, Refluxo, Diarreia
+  * Obstipação, Insônia, Estresse, Cansaço
+  * Ansiedade, Depressão, Trabalho/Estudo
+- Lesões de pele/cabelo/unha
+- Cirurgias
+- Hábito intestinal, Consistência das fezes
+- Diurese
+- Patologias, Medicamentos
+
+✅ ANTROPOMETRIA:
+- Peso, Estatura, IMC (calculado)
+- 11 Circunferências:
+  * Braço esq/dir, Peitoral, Cintura
+  * Abdominal, Quadril, Coxa esq/dir
+  * Panturrilha esq/dir, Pescoço
+- Relação C/Q (calculada)
+- 9 Dobras cutâneas (opcional):
+  * Tríceps, Bíceps, Escápula
+  * Suprailíaca, Axilar média, Peitoral
+  * Abdominal, Coxa média, Panturrilha
+- % Gordura
+
+✅ DIAGNÓSTICO:
+- Problema
+- Etiologia
+- Sinais/Sintomas
+
+✅ ORIENTAÇÕES:
+- Data da orientação
+- Texto das orientações
+- Cálculos e observações (TMB, GET, etc)
+
+=============================================================================
+                          ESTRUTURA DOS ARQUIVOS
+=============================================================================
+
+nutri_app/
+├── media/
+│   ├── pdfs/        ← PDFs gerados aqui
+│   └── docs/        ← Words gerados aqui
+├── anamnese/
+│   ├── models.py    ← Campos do prontuário
+│   ├── forms.py     ← Formulário web
+│   ├── views.py     ← Lógica do sistema
+│   ├── utils.py     ← Geração de PDF/Word
+│   └── templates/   ← Páginas HTML
+└── db.sqlite3       ← Banco de dados
+
+=============================================================================
+                      PRÓXIMOS PASSOS (FASE 2)
+=============================================================================
+
+Quando quiser adicionar mais funcionalidades:
+
+📊 TABELA TACO:
+- Importar composição de alimentos
+- Buscar alimentos
+- Calcular nutrientes
+
+🍽️ RECORDATÓRIO ALIMENTAR:
+- Registrar consumo diário
+- Tabela de refeições
+- Cálculo automático de calorias
+
+📈 CÁLCULOS NUTRICIONAIS:
+- TMB (Taxa Metabólica Basal)
+- GET (Gasto Energético Total)
+- Déficit/Superávit calórico
+- Distribuição de macros
+
+📋 PLANO ALIMENTAR:
+- Gerador automático de cardápios
+- Lista de compras
+- Templates personalizados
+
+Veja ROADMAP.md para detalhes completos!
+
+=============================================================================
+                           SUPORTE
+=============================================================================
+
+📖 Documentação:
+- README.md → Visão geral
+- INSTALL.md → Instalação detalhada
+- ROADMAP.md → Planejamento futuro
+- GITHUB_GUIDE.md → Como subir para GitHub
+
+🐛 Problemas comuns:
+- Erro "python não reconhecido" → Instale Python 3.10+
+- Erro "No module named django" → Ative o ambiente virtual
+- Porta 8000 em uso → Use: python manage.py runserver 8080
+
+💡 Dicas:
+- Sempre ative o ambiente virtual antes de trabalhar
+- Faça backup do db.sqlite3
+- Os documentos ficam em media/pdfs e media/docs
+
+=============================================================================
+                          DESENVOLVIDO COM ❤️
+=============================================================================
+
+Sistema criado especificamente para suas necessidades de nutrição!
+
+Ficou com dúvidas? Quer adicionar mais funcionalidades?
+É só me chamar! 🚀
+
+=============================================================================

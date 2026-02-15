@@ -1,0 +1,41 @@
+{% extends 'anamnese/base.html' %}
+
+{% block title %}Deletar Ficha{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <i class="fas fa-exclamation-triangle fa-5x text-danger mb-4"></i>
+    <h1 class="page-header text-danger">Confirmar Exclusão</h1>
+    
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Atenção!</h4>
+        <p>Você está prestes a deletar a ficha de <strong>{{ ficha.nome }}</strong>.</p>
+        <hr>
+        <p class="mb-0">Esta ação não pode ser desfeita. Tem certeza que deseja continuar?</p>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Detalhes da Ficha</h5>
+        </div>
+        <div class="card-body text-start">
+            <p><strong>Nome:</strong> {{ ficha.nome }}</p>
+            <p><strong>Data de Criação:</strong> {{ ficha.data_criacao|date:"d/m/Y H:i" }}</p>
+            <p><strong>Idade:</strong> {{ ficha.idade }} anos</p>
+            <p><strong>Objetivo:</strong> {{ ficha.get_objetivo_display }}</p>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{% url 'lista_fichas' %}" class="btn btn-secondary btn-lg">
+                <i class="fas fa-arrow-left"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-trash"></i> Sim, Deletar Ficha
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

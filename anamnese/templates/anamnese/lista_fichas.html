@@ -1,0 +1,81 @@
+{% extends 'anamnese/base.html' %}
+
+{% block title %}Minhas Fichas{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-header mb-0">
+        <i class="fas fa-folder-open"></i> Minhas Fichas de Anamnese
+    </h1>
+    <a href="{% url 'home' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nova Ficha
+    </a>
+</div>
+
+{% if fichas %}
+    <div class="row">
+        {% for ficha in fichas %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ ficha.nome }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong><i class="fas fa-calendar"></i> Data:</strong> {{ ficha.data_criacao|date:"d/m/Y H:i" }}<br>
+                        <strong><i class="fas fa-birthday-cake"></i> Idade:</strong> {{ ficha.idade }} anos<br>
+                        <strong><i class="fas fa-weight"></i> Peso:</strong> {{ ficha.peso_atual }} kg<br>
+                        <strong><i class="fas fa-ruler-vertical"></i> Altura:</strong> {{ ficha.altura }} m<br>
+                        <strong><i class="fas fa-calculator"></i> IMC:</strong> {{ ficha.calcular_imc }}
+                        <span class="badge 
+                            {% if ficha.calcular_imc < 18.5 %}bg-warning
+                            {% elif ficha.calcular_imc < 25 %}bg-success
+                            {% elif ficha.calcular_imc < 30 %}bg-warning
+                            {% else %}bg-danger
+                            {% endif %}">
+                            {{ ficha.classificacao_imc }}
+                        </span>
+                    </p>
+                    <p>
+                        <strong><i class="fas fa-bullseye"></i> Objetivo:</strong> 
+                        <span class="badge bg-info">{{ ficha.get_objetivo_display }}</span>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'visualizar_ficha' ficha.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i> Visualizar
+                        </a>
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'download_word' ficha.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-file-word"></i> Word
+                            </a>
+                            <a href="{% url 'download_pdf' ficha.id %}" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'editar_ficha' ficha.id %}" class="btn btn-sm btn-outline-warning">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a href="{% url 'deletar_ficha' ficha.id %}" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i> Deletar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info text-center" role="alert">
+        <i class="fas fa-info-circle fa-3x mb-3"></i>
+        <h4>Nenhuma ficha encontrada</h4>
+        <p>Você ainda não criou nenhuma ficha de anamnese.</p>
+        <a href="{% url 'home' %}" class="btn btn-primary mt-3">
+            <i class="fas fa-plus"></i> Criar Primeira Ficha
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

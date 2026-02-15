@@ -1,0 +1,651 @@
+{% extends 'anamnese/base.html' %}
+
+{% block title %}Prontuário Nutricional{% endblock %}
+
+{% block extra_css %}
+<style>
+    .nav-pills .nav-link {
+        color: #495057;
+        border-radius: 0;
+        border-bottom: 3px solid transparent;
+    }
+    .nav-pills .nav-link.active {
+        background-color: transparent;
+        color: #2c3e50;
+        border-bottom: 3px solid #3498db;
+        font-weight: bold;
+    }
+    .section-card {
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .form-section {
+        padding: 20px;
+    }
+    .symptom-check {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .btn-save {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-header mb-4">
+    <i class="fas fa-file-medical-alt"></i> Prontuário Nutricional
+</h1>
+
+<form method="post" id="prontuarioForm">
+    {% csrf_token %}
+    
+    <!-- Navegação por abas -->
+    <ul class="nav nav-pills mb-4" id="sectionTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="identificacao-tab" data-bs-toggle="pill" 
+                    data-bs-target="#identificacao" type="button" role="tab">
+                1. Identificação
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="historico-tab" data-bs-toggle="pill" 
+                    data-bs-target="#historico" type="button" role="tab">
+                2. Histórico Social
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="objetivo-tab" data-bs-toggle="pill" 
+                    data-bs-target="#objetivo" type="button" role="tab">
+                3. Objetivo
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="clinicos-tab" data-bs-toggle="pill" 
+                    data-bs-target="#clinicos" type="button" role="tab">
+                4. Dados Clínicos
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="antropometria-tab" data-bs-toggle="pill" 
+                    data-bs-target="#antropometria" type="button" role="tab">
+                5. Antropometria
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="diagnostico-tab" data-bs-toggle="pill" 
+                    data-bs-target="#diagnostico" type="button" role="tab">
+                6. Diagnóstico
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="orientacoes-tab" data-bs-toggle="pill" 
+                    data-bs-target="#orientacoes" type="button" role="tab">
+                7. Orientações
+            </button>
+        </li>
+    </ul>
+
+    <!-- Conteúdo das abas -->
+    <div class="tab-content" id="sectionTabsContent">
+        
+        <!-- ABA 1: IDENTIFICAÇÃO -->
+        <div class="tab-pane fade show active" id="identificacao" role="tabpanel">
+            <div class="card section-card">
+                <div class="card-body form-section">
+                    <h4 class="mb-3"><i class="fas fa-id-card"></i> Dados de Identificação</h4>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.data_consulta.label}}</label>
+                            {{form.data_consulta}}
+                        </div>
+                        <div class="col-md-9 mb-3">
+                            <label class="form-label">{{form.nome.label}} *</label>
+                            {{form.nome}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">{{form.endereco.label}}</label>
+                            {{form.endereco}}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{form.bairro.label}}</label>
+                            {{form.bairro}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.email.label}} *</label>
+                            {{form.email}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.celular.label}} *</label>
+                            {{form.celular}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.profissao.label}} *</label>
+                            {{form.profissao}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.data_nascimento.label}} *</label>
+                            {{form.data_nascimento}}
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">{{form.idade.label}} *</label>
+                            {{form.idade}}
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">{{form.sexo.label}} *</label>
+                            {{form.sexo}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.motivo_consulta.label}} *</label>
+                            {{form.motivo_consulta}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.observacoes_iniciais.label}}</label>
+                            {{form.observacoes_iniciais}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 2: HISTÓRICO SOCIAL -->
+        <div class="tab-pane fade" id="historico" role="tabpanel">
+            <div class="card section-card">
+                <div class="card-body form-section">
+                    <h4 class="mb-3"><i class="fas fa-users"></i> Histórico Social e Familiar</h4>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{form.estado_civil.label}}</label>
+                            {{form.estado_civil}}
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">{{form.composicao_familiar.label}}</label>
+                            {{form.composicao_familiar}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.quem_compra_alimentos.label}}</label>
+                            {{form.quem_compra_alimentos}}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.frequencia_compra.label}}</label>
+                            {{form.frequencia_compra}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.quem_prepara_refeicoes.label}}</label>
+                            {{form.quem_prepara_refeicoes}}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.com_quem_faz_refeicoes.label}}</label>
+                            {{form.com_quem_faz_refeicoes}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.bebidas_alcoolicas.label}}</label>
+                            {{form.bebidas_alcoolicas}}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.fuma.label}}</label>
+                            {{form.fuma}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 3: OBJETIVO -->
+        <div class="tab-pane fade" id="objetivo" role="tabpanel">
+            <div class="card section-card">
+                <div class="card-body form-section">
+                    <h4 class="mb-3"><i class="fas fa-bullseye"></i> Objetivo Principal</h4>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.porque_procurou.label}} *</label>
+                            {{form.porque_procurou}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.meta_pessoal.label}} *</label>
+                            {{form.meta_pessoal}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 4: DADOS CLÍNICOS -->
+        <div class="tab-pane fade" id="clinicos" role="tabpanel">
+            <div class="card section-card">
+                <div class="card-body form-section">
+                    <h4 class="mb-3"><i class="fas fa-stethoscope"></i> Dados Clínicos</h4>
+                    
+                    <h5 class="mt-3 mb-3">Sintomas (marque se aplicável)</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.vomito}} <label class="form-check-label">Vômito</label>
+                                </div>
+                                {{form.vomito_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.nausea}} <label class="form-check-label">Náusea</label>
+                                </div>
+                                {{form.nausea_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.mastigacao}} <label class="form-check-label">Mastigação</label>
+                                </div>
+                                {{form.mastigacao_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.degluticao}} <label class="form-check-label">Deglutição</label>
+                                </div>
+                                {{form.degluticao_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.digestao}} <label class="form-check-label">Digestão</label>
+                                </div>
+                                {{form.digestao_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.pirose}} <label class="form-check-label">Pirose</label>
+                                </div>
+                                {{form.pirose_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.refluxo}} <label class="form-check-label">Refluxo</label>
+                                </div>
+                                {{form.refluxo_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.diarreia}} <label class="form-check-label">Diarreia</label>
+                                </div>
+                                {{form.diarreia_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.obstipacao}} <label class="form-check-label">Obstipação</label>
+                                </div>
+                                {{form.obstipacao_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.insonia}} <label class="form-check-label">Insônia</label>
+                                </div>
+                                {{form.insonia_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.estresse}} <label class="form-check-label">Estresse</label>
+                                </div>
+                                {{form.estresse_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.cansaco}} <label class="form-check-label">Cansaço</label>
+                                </div>
+                                {{form.cansaco_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.ansiedade}} <label class="form-check-label">Ansiedade</label>
+                                </div>
+                                {{form.ansiedade_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.depressao}} <label class="form-check-label">Depressão</label>
+                                </div>
+                                {{form.depressao_obs}}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check">
+                                    {{form.trabalho_estudo_afeta}} <label class="form-check-label">Trabalho/Estudo Afeta</label>
+                                </div>
+                                {{form.trabalho_estudo_obs}}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="mb-3">Outros Dados Clínicos</h5>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.lesoes_pele.label}}</label>
+                            {{form.lesoes_pele}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.cirurgia.label}}</label>
+                            {{form.cirurgia}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{form.habito_intestinal.label}}</label>
+                            {{form.habito_intestinal}}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{form.consistencia_fezes.label}}</label>
+                            {{form.consistencia_fezes}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.diurese.label}}</label>
+                            {{form.diurese}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.patologia.label}}</label>
+                            {{form.patologia}}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{form.medicamento.label}}</label>
+                            {{form.medicamento}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 5: ANTROPOMETRIA -->
+        <div class="tab-pane fade" id="antropometria" role="tabpanel">
+            <div class="card section-card">
+                <div class="card-body form-section">
+                    <h4 class="mb-3"><i class="fas fa-weight"></i> Ficha Antropométrica</h4>
+                    
+                    <h5 class="mb-3">Medidas Principais</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.peso.label}} *</label>
+                            {{form.peso}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.estatura.label}} *</label>
+                            {{form.estatura}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">IMC (calculado)</label>
+                            <input type="text" class="form-control" id="imc_display" readonly>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mt-4 mb-3">Circunferências</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_braco_esq.label}}</label>
+                            {{form.circunferencia_braco_esq}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_braco_dir.label}}</label>
+                            {{form.circunferencia_braco_dir}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_peitoral.label}}</label>
+                            {{form.circunferencia_peitoral}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_cintura.label}}</label>
+                            {{form.circunferencia_cintura}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_abdominal.label}}</label>
+                            {{form.circunferencia_abdominal}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_quadril.label}}</label>
+                            {{form.circunferencia_quadril}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_coxa_dir.label}}</label>
+                            {{form.circunferencia_coxa_dir}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_coxa_esq.label}}</label>
+                            {{form.circunferencia_coxa_esq}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_panturrilha_esq.label}}</label>
+                            {{form.circunferencia_panturrilha_esq}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_panturrilha_dir.label}}</label>
+                            {{form.circunferencia_panturrilha_dir}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.circunferencia_pescoco.label}}</label>
+                            {{form.circunferencia_pescoco}}
+                        </div>
+                    </div>
+                    
+                    <h5 class="mt-4 mb-3">Dobras Cutâneas (opcional)</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_triceps.label}}</label>
+                            {{form.dc_triceps}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_biceps.label}}</label>
+                            {{form.dc_biceps}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_escapula.label}}</label>
+                            {{form.dc_escapula}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_suprailiaca.label}}</label>
+                            {{form.dc_suprailiaca}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_axilar_media.label}}</label>
+                            {{form.dc_axilar_media}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_peitoral.label}}</label>
+                            {{form.dc_peitoral}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_abdominal.label}}</label>
+                            {{form.dc_abdominal}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_coxa_media.label}}</label>
+                            {{form.dc_coxa_media}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.dc_panturrilha.label}}</label>
+                            {{form.dc_panturrilha}}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">{{form.percentual_gordura.label}}</label>
+                            {{form.percentual_gordura}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 6: DIAGNÓSTICO -->
+        <div class="tab-pane fade" id="diagnostico" role="tabpanel">
+            <div class="card section-card">
+                <div class="card-body form-section">
+                    <h4 class="mb-3"><i class="fas fa-diagnoses"></i> Diagnóstico Nutricional</h4>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.diagnostico_problema.label}}</label>
+                            {{form.diagnostico_problema}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.diagnostico_etiologia.label}}</label>
+                            {{form.diagnostico_etiologia}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.diagnostico_sinais.label}}</label>
+                            {{form.diagnostico_sinais}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 7: ORIENTAÇÕES -->
+        <div class="tab-pane fade" id="orientacoes" role="tabpanel">
+            <div class="card section-card">
+                <div class="card-body form-section">
+                    <h4 class="mb-3"><i class="fas fa-clipboard-list"></i> Orientações e Devolutivas</h4>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{form.data_orientacao.label}}</label>
+                            {{form.data_orientacao}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.orientacoes_texto.label}}</label>
+                            {{form.orientacoes_texto}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{form.calculos_observacoes.label}}</label>
+                            <small class="text-muted d-block mb-2">Ex: Cálculos de TMB, GET, superávit/déficit calórico</small>
+                            {{form.calculos_observacoes}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Botões de ação -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <a href="{% url 'lista_fichas' %}" class="btn btn-secondary btn-lg">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+        <button type="submit" class="btn btn-success btn-save btn-lg">
+            <i class="fas fa-save"></i> Salvar e Gerar PDF
+        </button>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Calcular IMC automaticamente
+function calcularIMC() {
+    const peso = parseFloat(document.getElementById('id_peso').value);
+    const estatura = parseFloat(document.getElementById('id_estatura').value);
+    
+    if (peso && estatura && estatura > 0) {
+        const imc = (peso / (estatura * estatura)).toFixed(2);
+        document.getElementById('imc_display').value = imc;
+        
+        // Classificação
+        let classificacao = '';
+        if (imc < 18.5) classificacao = 'Abaixo do peso';
+        else if (imc < 25) classificacao = 'Eutrófico';
+        else if (imc < 30) classificacao = 'Sobrepeso';
+        else if (imc < 35) classificacao = 'Obesidade Grau I';
+        else if (imc < 40) classificacao = 'Obesidade Grau II';
+        else classificacao = 'Obesidade Grau III';
+        
+        document.getElementById('imc_display').value = `${imc} (${classificacao})`;
+    } else {
+        document.getElementById('imc_display').value = '';
+    }
+}
+
+document.getElementById('id_peso').addEventListener('input', calcularIMC);
+document.getElementById('id_estatura').addEventListener('input', calcularIMC);
+
+// Calcular idade automaticamente
+document.getElementById('id_data_nascimento').addEventListener('change', function() {
+    const dataNasc = new Date(this.value);
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - dataNasc.getFullYear();
+    const mes = hoje.getMonth() - dataNasc.getMonth();
+    
+    if (mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) {
+        idade--;
+    }
+    
+    document.getElementById('id_idade').value = idade;
+});
+</script>
+{% endblock %}

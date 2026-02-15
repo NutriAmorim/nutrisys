@@ -1,0 +1,255 @@
+=============================================================================
+                    ✅ SISTEMA PRONTO COM SEU TEMPLATE!
+=============================================================================
+
+🎉 O sistema agora usa sua ficha original "Nutri Amorim" como template!
+
+Quando você preencher o formulário e clicar em "Salvar e Gerar PDF", o sistema vai:
+
+✅ Usar seu documento Word original (com logo, bordas, formatação)
+✅ Preencher automaticamente os campos
+✅ Manter TODO o layout visual
+✅ Gerar PDF também
+
+=============================================================================
+                         📋 ARQUIVOS IMPORTANTES
+=============================================================================
+
+📄 anamnese/template_prontuario.docx
+   └─> Este é SEU template original!
+   └─> O sistema usa ele como base
+   └─> Se quiser mudar o layout, edite este arquivo
+
+📁 media/docs/
+   └─> Aqui ficam os Words gerados
+
+📁 media/pdfs/
+   └─> Aqui ficam os PDFs gerados
+
+=============================================================================
+                      🎨 PERSONALIZANDO O TEMPLATE
+=============================================================================
+
+Se quiser mudar algo no layout:
+
+1. Abra: anamnese/template_prontuario.docx
+2. Edite o que quiser (cores, fonte, imagens)
+3. Salve
+4. Pronto! Os próximos documentos usarão o novo layout
+
+IMPORTANTE: O sistema substitui automaticamente:
+- Datas
+- Nome do paciente
+- Email, telefone, profissão
+- E outros campos básicos
+
+=============================================================================
+                         🚀 COMO RODAR O SISTEMA
+=============================================================================
+
+1. ABRIR NO VSCODE:
+   - File → Open Folder → Selecione a pasta nutri_app
+
+2. ABRIR TERMINAL NO VSCODE:
+   - Pressione Ctrl+` (acento grave)
+   - Ou: Terminal → New Terminal
+
+3. CRIAR AMBIENTE VIRTUAL:
+   python -m venv venv
+
+4. ATIVAR AMBIENTE VIRTUAL:
+   
+   PowerShell (padrão VSCode):
+   venv\Scripts\Activate.ps1
+   
+   CMD:
+   venv\Scripts\activate.bat
+   
+   Git Bash:
+   source venv/Scripts/activate
+
+5. INSTALAR DEPENDÊNCIAS:
+   pip install -r requirements.txt
+   (aguarde ~2 minutos)
+
+6. CONFIGURAR BANCO:
+   python manage.py makemigrations
+   python manage.py migrate
+
+7. CRIAR USUÁRIO ADMIN (opcional):
+   python manage.py createsuperuser
+   (digite usuário, email, senha)
+
+8. INICIAR SERVIDOR:
+   python manage.py runserver
+
+9. ACESSAR:
+   http://127.0.0.1:8000
+
+=============================================================================
+                         💡 USANDO O SISTEMA
+=============================================================================
+
+1. CRIAR PRONTUÁRIO:
+   - Acesse http://127.0.0.1:8000
+   - Navegue pelas 7 abas preenchendo os campos
+   - Clique em "Salvar e Gerar PDF"
+   - ✅ Word E PDF são gerados automaticamente!
+
+2. VER PRONTUÁRIOS:
+   - Clique em "Minhas Fichas"
+   - Veja todos os prontuários
+
+3. BAIXAR DOCUMENTOS:
+   - Clique em "Baixar Word" → Baixa o .docx
+   - Clique em "Baixar PDF" → Baixa o .pdf
+
+4. EDITAR:
+   - Clique em "Editar"
+   - Altere os campos
+   - Salve → Documentos são regenerados
+
+=============================================================================
+                         📊 AS 7 ABAS DO FORMULÁRIO
+=============================================================================
+
+1️⃣ IDENTIFICAÇÃO:
+   Nome, endereço, contato, idade, sexo, motivo da consulta
+
+2️⃣ HISTÓRICO SOCIAL:
+   Estado civil, composição familiar, hábitos alimentares da família
+
+3️⃣ OBJETIVO:
+   Por que procurou atendimento, meta pessoal
+
+4️⃣ DADOS CLÍNICOS:
+   15 sintomas com checkboxes + observações
+   Cirurgias, patologias, medicamentos
+
+5️⃣ ANTROPOMETRIA:
+   Peso, altura, IMC (calculado automaticamente!)
+   Circunferências, dobras cutâneas
+
+6️⃣ DIAGNÓSTICO:
+   Problema, Etiologia, Sinais/Sintomas
+
+7️⃣ ORIENTAÇÕES:
+   Data, orientações, cálculos (TMB, GET, etc)
+
+=============================================================================
+                      ⚡ RECURSOS AUTOMÁTICOS
+=============================================================================
+
+✅ IMC calculado em tempo real (conforme você digita peso e altura)
+✅ Idade calculada pela data de nascimento
+✅ Relação Cintura/Quadril calculada automaticamente
+✅ Word gerado com SEU template (logo, cores, formatação)
+✅ PDF profissional gerado junto
+
+=============================================================================
+                         🐛 PROBLEMAS COMUNS
+=============================================================================
+
+❌ "python não é reconhecido"
+   → Instale Python 3.10+ de python.org
+   → Adicione ao PATH durante instalação
+
+❌ Erro no Activate.ps1
+   → Use: venv\Scripts\activate.bat
+
+❌ Erro ao instalar dependências
+   → Verifique conexão com internet
+   → Tente: pip install --upgrade pip
+   → Depois: pip install -r requirements.txt
+
+❌ Porta 8000 em uso
+   → Use: python manage.py runserver 8080
+   → Acesse: http://127.0.0.1:8080
+
+❌ Word gerado sem logo/formatação
+   → Verifique se existe: anamnese/template_prontuario.docx
+   → Se não existir, copie sua ficha original para lá
+
+❌ Campos não aparecem no Word
+   → O template tem marcadores diferentes
+   → Edite utils.py para adicionar mais substituições
+
+=============================================================================
+                         📂 ONDE FICAM OS ARQUIVOS
+=============================================================================
+
+GERADOS PELO SISTEMA:
+media/docs/        → Words gerados (.docx)
+media/pdfs/        → PDFs gerados (.pdf)
+db.sqlite3         → Banco de dados
+
+TEMPLATE:
+anamnese/template_prontuario.docx  → Sua ficha original
+
+CÓDIGO:
+anamnese/models.py    → Campos do banco de dados
+anamnese/forms.py     → Formulário web
+anamnese/views.py     → Lógica do sistema
+anamnese/utils.py     → Geração de Word e PDF
+anamnese/templates/   → Páginas HTML
+
+=============================================================================
+                         🎯 PRÓXIMOS PASSOS
+=============================================================================
+
+Agora que a Fase 1 está completa, você pode:
+
+📊 FASE 2 - Adicionar cálculos:
+   - Importar tabela TACO (composição de alimentos)
+   - Calcular TMB (Taxa Metabólica Basal)
+   - Calcular GET (Gasto Energético Total)
+   - Registrar recordatório alimentar 24h
+   - Calcular consumo de calorias e macros
+
+🍽️ FASE 3 - Plano alimentar:
+   - Gerar cardápios automáticos
+   - Lista de compras
+   - Sugestões de alimentos
+
+📈 FASE 4 - Evolução:
+   - Gráficos de progresso
+   - Histórico de peso
+   - Comparações entre consultas
+
+Veja ROADMAP.md para mais detalhes!
+
+=============================================================================
+                         ✨ DICAS IMPORTANTES
+=============================================================================
+
+💾 BACKUP:
+   - Faça backup do db.sqlite3 (banco de dados)
+   - Faça backup da pasta media/ (documentos gerados)
+
+🔒 SEGURANÇA:
+   - Nunca compartilhe db.sqlite3 (tem dados dos pacientes)
+   - Use senhas fortes no createsuperuser
+
+⚡ PERFORMANCE:
+   - O sistema fica mais rápido depois da primeira vez
+   - Os arquivos ficam em cache
+
+🎨 PERSONALIZAÇÃO:
+   - Edite anamnese/templates/ para mudar a interface
+   - Edite template_prontuario.docx para mudar o layout
+   - Edite static/css/ para mudar cores e estilos
+
+=============================================================================
+                         🆘 PRECISA DE AJUDA?
+=============================================================================
+
+📖 Documentação completa: README.md
+📦 Guia de instalação: INSTALL.md
+🗺️ Próximas funcionalidades: ROADMAP.md
+🐙 Como subir para GitHub: GITHUB_GUIDE.md
+
+💬 Dúvidas? É só chamar! 🚀
+
+=============================================================================
+                    DESENVOLVIDO COM ❤️ PARA VOCÊ
+=============================================================================
