@@ -80,17 +80,19 @@
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="estilo_vida-tab" data-bs-toggle="pill" 
-                    data-bs-target="#estilo_vida" type="button" role="tab">
+            <button class="nav-link" id="estilo-vida-tab" data-bs-toggle="pill" 
+                    data-bs-target="#estilo-vida" type="button" role="tab">
                 6. Estilo de Vida
             </button>
         </li>
+
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="diagnostico-tab" data-bs-toggle="pill" 
                     data-bs-target="#diagnostico" type="button" role="tab">
                 7. Diagnóstico
             </button>
         </li>
+
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="orientacoes-tab" data-bs-toggle="pill" 
                     data-bs-target="#orientacoes" type="button" role="tab">
@@ -235,6 +237,23 @@
                         <div class="col-md-12 mb-3">
                             <label class="form-label">{{form.meta_pessoal.label}} *</label>
                             {{form.meta_pessoal}}
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <h5 class="mb-3"><i class="fas fa-running"></i> Estilo de Vida</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{form.nivel_atividade_fisica.label}}</label>
+                            {{form.nivel_atividade_fisica}}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{form.qual_esporte.label}}</label>
+                            {{form.qual_esporte}}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{form.frequencia_esporte.label}}</label>
+                            {{form.frequencia_esporte}}
                         </div>
                     </div>
                 </div>
@@ -542,22 +561,30 @@
         </div>
 
         <!-- ABA 6: ESTILO DE VIDA -->
-        <div class="tab-pane fade" id="estilo_vida" role="tabpanel">
+        <div class="tab-pane fade" id="estilo-vida" role="tabpanel">
             <div class="card section-card">
                 <div class="card-body form-section">
                     <h4 class="mb-3"><i class="fas fa-running"></i> Estilo de Vida - Atividade Física</h4>
+
                     <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">{{form.nivel_atividade_fisica.label}}</label>
-                            {{form.nivel_atividade_fisica}}
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">{{form.qual_esporte.label}}</label>
-                            {{form.qual_esporte}}
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">{{form.frequencia_esporte.label}}</label>
-                            {{form.frequencia_esporte}}
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">{{ form.nivel_atividade_fisica.label }}</label>
+                    {{ form.nivel_atividade_fisica }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">{{ form.qual_esporte.label }}</label>
+                    {{ form.qual_esporte }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">{{ form.frequencia_esporte.label }}</label>
+                    {{ form.frequencia_esporte }}
+                            <small class="text-muted d-block mb-2">Ex: Quantas vezes ao dia/semana</small>
                         </div>
                     </div>
                 </div>
@@ -591,7 +618,7 @@
             </div>
         </div>
 
-        <!-- ABA 8: ORIENTAÇÕES -->
+        <!-- ABA 9: ORIENTAÇÕES -->
         <div class="tab-pane fade" id="orientacoes" role="tabpanel">
             <div class="card section-card">
                 <div class="card-body form-section">
@@ -627,7 +654,7 @@
             <i class="fas fa-arrow-left"></i> Anterior
         </button>
         <div class="text-center flex-grow-1" id="progressoAbas">
-            <small class="text-muted">Aba <span id="abaAtual">1</span> de 8</small>
+            <small class="text-muted">Aba <span id="abaAtual">1</span> de 7</small>
         </div>
         <button type="button" class="btn btn-primary btn-lg" id="btnProxima">
             Próxima <i class="fas fa-arrow-right"></i>
@@ -696,7 +723,7 @@ const abas = [
     'objetivo',
     'clinicos',
     'antropometria',
-    'estilo_vida',
+    'estilo-vida',
     'diagnostico',
     'orientacoes'
 ];

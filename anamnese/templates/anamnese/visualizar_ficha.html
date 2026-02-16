@@ -1,9 +1,13 @@
 {% extends 'anamnese/base.html' %}
 
-{% block title %}Ficha de {{ ficha.nome }}{% endblock %}
+{% block title %}Prontuário de {{ ficha.nome }}{% endblock %}
 
 {% block content %}
-<div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-header mb-0">
+        <i class="fas fa-file-medical-alt"></i> Prontuário de {{ ficha.nome }}
+    </h1>
+    <div>
         <a href="{% url 'download_word' ficha.id %}" class="btn btn-primary">
             <i class="fas fa-file-word"></i> Baixar Word
         </a>
@@ -16,121 +20,188 @@
         <a href="{% url 'lista_fichas' %}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
+    </div>
 </div>
 
-<!-- Dados Pessoais -->
+<!-- IDENTIFICAÇÃO -->
 <div class="card mb-4">
     <div class="card-header bg-primary text-white">
-        <h5 class="mb-0"><i class="fas fa-user"></i> Dados Pessoais</h5>
+        <h5 class="mb-0"><i class="fas fa-id-card"></i> Identificação</h5>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
+                <p><strong>Data da Consulta:</strong> {{ ficha.data_consulta|date:"d/m/Y" }}</p>
                 <p><strong>Nome:</strong> {{ ficha.nome }}</p>
+                <p><strong>Endereço:</strong> {{ ficha.endereco|default:"Não informado" }}</p>
+                <p><strong>Bairro:</strong> {{ ficha.bairro|default:"Não informado" }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>E-mail:</strong> {{ ficha.email|default:"Não informado" }}</p>
+                <p><strong>Celular:</strong> {{ ficha.celular|default:"Não informado" }}</p>
+                <p><strong>Profissão:</strong> {{ ficha.profissao|default:"Não informado" }}</p>
                 <p><strong>Data de Nascimento:</strong> {{ ficha.data_nascimento|date:"d/m/Y" }}</p>
-                <p><strong>Idade:</strong> {{ ficha.idade }} anos</p>
+                <p><strong>Idade:</strong> {{ ficha.idade|default:"-" }} anos</p>
                 <p><strong>Sexo:</strong> {% if ficha.sexo == 'M' %}Masculino{% else %}Feminino{% endif %}</p>
             </div>
-            <div class="col-md-6">
-                <p><strong>Telefone:</strong> {{ ficha.telefone }}</p>
-                <p><strong>E-mail:</strong> {{ ficha.email }}</p>
-                <p><strong>Profissão:</strong> {{ ficha.profissao }}</p>
-            </div>
         </div>
+        <hr>
+        <p><strong>Motivo da Consulta:</strong> {{ ficha.motivo_consulta|default:"-" }}</p>
+        <p><strong>Observações:</strong> {{ ficha.observacoes_iniciais|default:"-" }}</p>
     </div>
 </div>
 
-<!-- Dados Antropométricos -->
-<div class="card mb-4">
-    <div class="card-header bg-success text-white">
-        <h5 class="mb-0"><i class="fas fa-weight"></i> Dados Antropométricos</h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-3">
-                <p><strong>Peso Atual:</strong> {{ ficha.peso_atual }} kg</p>
-            </div>
-            <div class="col-md-3">
-                <p><strong>Altura:</strong> {{ ficha.altura }} m</p>
-            </div>
-            <div class="col-md-3">
-                <p><strong>Peso Desejado:</strong> {% if ficha.peso_desejado %}{{ ficha.peso_desejado }} kg{% else %}Não informado{% endif %}</p>
-            </div>
-            <div class="col-md-3">
-                <p>
-                    <strong>IMC:</strong> {{ ficha.calcular_imc }}
-                    <span class="badge 
-                        {% if ficha.calcular_imc < 18.5 %}bg-warning
-                        {% elif ficha.calcular_imc < 25 %}bg-success
-                        {% elif ficha.calcular_imc < 30 %}bg-warning
-                        {% else %}bg-danger
-                        {% endif %}">
-                        {{ ficha.classificacao_imc }}
-                    </span>
-                </p>
-            </div>
-        </div>
-        <div class="mt-3">
-            <p><strong>Objetivo:</strong> <span class="badge bg-info">{{ ficha.get_objetivo_display }}</span></p>
-        </div>
-    </div>
-</div>
-
-<!-- História Clínica -->
-<div class="card mb-4">
-    <div class="card-header bg-warning text-dark">
-        <h5 class="mb-0"><i class="fas fa-notes-medical"></i> História Clínica</h5>
-    </div>
-    <div class="card-body">
-        <p><strong>Patologias/Doenças:</strong></p>
-        <p>{{ ficha.patologias|default:"Nenhuma informada"|linebreaks }}</p>
-        
-        <p><strong>Medicamentos em Uso:</strong></p>
-        <p>{{ ficha.medicamentos|default:"Nenhum informado"|linebreaks }}</p>
-        
-        <p><strong>Alergias/Intolerâncias:</strong></p>
-        <p>{{ ficha.alergias_intolerancia|default:"Nenhuma informada"|linebreaks }}</p>
-    </div>
-</div>
-
-<!-- Estilo de Vida -->
+<!-- HISTÓRICO SOCIAL -->
 <div class="card mb-4">
     <div class="card-header bg-info text-white">
-        <h5 class="mb-0"><i class="fas fa-running"></i> Estilo de Vida</h5>
+        <h5 class="mb-0"><i class="fas fa-users"></i> Histórico Social e Familiar</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Estado Civil:</strong> {{ ficha.get_estado_civil_display|default:"-" }}</p>
+                <p><strong>Composição Familiar:</strong> {{ ficha.composicao_familiar|default:"-" }}</p>
+                <p><strong>Quem Compra Alimentos:</strong> {{ ficha.quem_compra_alimentos|default:"-" }}</p>
+                <p><strong>Frequência da Compra:</strong> {{ ficha.get_frequencia_compra_display|default:"-" }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Quem Prepara Refeições:</strong> {{ ficha.quem_prepara_refeicoes|default:"-" }}</p>
+                <p><strong>Com Quem Faz Refeições:</strong> {{ ficha.com_quem_faz_refeicoes|default:"-" }}</p>
+                <p><strong>Bebidas Alcoólicas:</strong> {{ ficha.bebidas_alcoolicas|default:"-" }}</p>
+                <p><strong>Tabagismo:</strong> {{ ficha.fuma|default:"-" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- OBJETIVO -->
+<div class="card mb-4">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="fas fa-bullseye"></i> Objetivo Principal</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>Por que Procurou Atendimento:</strong> {{ ficha.porque_procurou|default:"-" }}</p>
+        <p><strong>Meta Pessoal:</strong> {{ ficha.meta_pessoal|default:"-" }}</p>
+    </div>
+</div>
+
+<!-- DADOS CLÍNICOS -->
+<div class="card mb-4">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0"><i class="fas fa-stethoscope"></i> Dados Clínicos</h5>
+    </div>
+    <div class="card-body">
+        <h6>Sintomas:</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-unstyled">
+                    <li>{% if ficha.vomito %}✅{% else %}❌{% endif %} Vômito {% if ficha.vomito_obs %}<small class="text-muted">({{ ficha.vomito_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.nausea %}✅{% else %}❌{% endif %} Náusea {% if ficha.nausea_obs %}<small class="text-muted">({{ ficha.nausea_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.mastigacao %}✅{% else %}❌{% endif %} Dificuldade de Mastigação {% if ficha.mastigacao_obs %}<small class="text-muted">({{ ficha.mastigacao_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.degluticao %}✅{% else %}❌{% endif %} Dificuldade de Deglutição {% if ficha.degluticao_obs %}<small class="text-muted">({{ ficha.degluticao_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.digestao %}✅{% else %}❌{% endif %} Problemas de Digestão {% if ficha.digestao_obs %}<small class="text-muted">({{ ficha.digestao_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.pirose %}✅{% else %}❌{% endif %} Pirose (Azia) {% if ficha.pirose_obs %}<small class="text-muted">({{ ficha.pirose_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.refluxo %}✅{% else %}❌{% endif %} Refluxo {% if ficha.refluxo_obs %}<small class="text-muted">({{ ficha.refluxo_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.diarreia %}✅{% else %}❌{% endif %} Diarreia {% if ficha.diarreia_obs %}<small class="text-muted">({{ ficha.diarreia_obs }})</small>{% endif %}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="list-unstyled">
+                    <li>{% if ficha.obstipacao %}✅{% else %}❌{% endif %} Obstipação {% if ficha.obstipacao_obs %}<small class="text-muted">({{ ficha.obstipacao_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.insonia %}✅{% else %}❌{% endif %} Insônia {% if ficha.insonia_obs %}<small class="text-muted">({{ ficha.insonia_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.estresse %}✅{% else %}❌{% endif %} Estresse {% if ficha.estresse_obs %}<small class="text-muted">({{ ficha.estresse_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.cansaco %}✅{% else %}❌{% endif %} Cansaço {% if ficha.cansaco_obs %}<small class="text-muted">({{ ficha.cansaco_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.ansiedade %}✅{% else %}❌{% endif %} Ansiedade {% if ficha.ansiedade_obs %}<small class="text-muted">({{ ficha.ansiedade_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.depressao %}✅{% else %}❌{% endif %} Depressão {% if ficha.depressao_obs %}<small class="text-muted">({{ ficha.depressao_obs }})</small>{% endif %}</li>
+                    <li>{% if ficha.trabalho_estudo_afeta %}✅{% else %}❌{% endif %} Trabalho/Estudo Afeta {% if ficha.trabalho_estudo_obs %}<small class="text-muted">({{ ficha.trabalho_estudo_obs }})</small>{% endif %}</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <h6>Outros Dados Clínicos:</h6>
+        <p><strong>Lesões na Pele/Cabelo/Unha:</strong> {{ ficha.lesoes_pele|default:"-" }}</p>
+        <p><strong>Cirurgias:</strong> {{ ficha.cirurgia|default:"-" }}</p>
+        <p><strong>Hábito Intestinal:</strong> {{ ficha.get_habito_intestinal_display|default:"-" }}</p>
+        <p><strong>Consistência das Fezes:</strong> {{ ficha.get_consistencia_fezes_display|default:"-" }}</p>
+        <p><strong>Diurese:</strong> {{ ficha.diurese|default:"-" }}</p>
+        <p><strong>Patologias:</strong> {{ ficha.patologia|default:"-" }}</p>
+        <p><strong>Medicamentos:</strong> {{ ficha.medicamento|default:"-" }}</p>
+    </div>
+</div>
+
+<!-- ANTROPOMETRIA -->
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="fas fa-weight"></i> Ficha Antropométrica</h5>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-4">
-                <p><strong>Nível de Atividade Física:</strong></p>
-                <p>{{ ficha.get_nivel_atividade_display }}</p>
+                <p><strong>Peso:</strong> {{ ficha.peso|default:"-" }} kg</p>
+                <p><strong>Estatura:</strong> {{ ficha.estatura|default:"-" }} m</p>
+                <p><strong>IMC:</strong> {{ ficha.imc|default:"-" }} kg/m² 
+                    <span class="badge bg-primary">{{ ficha.classificacao_imc|default:"-" }}</span>
+                </p>
             </div>
             <div class="col-md-4">
-                <p><strong>Refeições por Dia:</strong></p>
-                <p>{{ ficha.refeicoes_dia }}</p>
+                <h6>Circunferências (cm):</h6>
+                <p>Braço Esq: {{ ficha.circunferencia_braco_esq|default:"-" }}</p>
+                <p>Braço Dir: {{ ficha.circunferencia_braco_dir|default:"-" }}</p>
+                <p>Peitoral: {{ ficha.circunferencia_peitoral|default:"-" }}</p>
+                <p>Cintura: {{ ficha.circunferencia_cintura|default:"-" }}</p>
+                <p>Abdominal: {{ ficha.circunferencia_abdominal|default:"-" }}</p>
+                <p>Quadril: {{ ficha.circunferencia_quadril|default:"-" }}</p>
+                <p><strong>Relação C/Q:</strong> {{ ficha.relacao_cq|default:"-" }}</p>
             </div>
             <div class="col-md-4">
-                <p><strong>Consumo de Água:</strong></p>
-                <p>{{ ficha.consumo_agua }} L/dia</p>
+                <h6>Dobras Cutâneas (mm):</h6>
+                <p>Tríceps: {{ ficha.dc_triceps|default:"-" }}</p>
+                <p>Bíceps: {{ ficha.dc_biceps|default:"-" }}</p>
+                <p>Escápula: {{ ficha.dc_escapula|default:"-" }}</p>
+                <p>Suprailíaca: {{ ficha.dc_suprailiaca|default:"-" }}</p>
+                <p><strong>% Gordura:</strong> {{ ficha.percentual_gordura|default:"-" }}%</p>
             </div>
         </div>
-        <p><strong>Restrições Alimentares:</strong></p>
-        <p>{{ ficha.restricoes_alimentares|default:"Nenhuma informada"|linebreaks }}</p>
     </div>
 </div>
 
-<!-- Observações -->
-{% if ficha.observacoes %}
+<!-- ESTILO DE VIDA - ATIVIDADE FÍSICA -->
 <div class="card mb-4">
-    <div class="card-header bg-secondary text-white">
-        <h5 class="mb-0"><i class="fas fa-clipboard"></i> Observações</h5>
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="fas fa-running"></i> Estilo de Vida - Atividade Física</h5>
     </div>
     <div class="card-body">
-        <p>{{ ficha.observacoes|linebreaks }}</p>
+        <p><strong>Nível de atividade física:</strong> {{ ficha.nivel_atividade_fisica|default:"Não informado" }}</p>
+        <p><strong>Atividade praticada:</strong> {{ ficha.qual_esporte|default:"Não informado" }}</p>
+        <p><strong>Frequência:</strong> {{ ficha.frequencia_esporte|default:"Não informado" }}</p>
     </div>
 </div>
-{% endif %}
 
-<!-- Informações da Ficha -->
+<!-- DIAGNÓSTICO -->
+<div class="card mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0"><i class="fas fa-diagnoses"></i> Diagnóstico Nutricional</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>Problema:</strong> {{ ficha.diagnostico_problema|default:"-" }}</p>
+        <p><strong>Etiologia:</strong> {{ ficha.diagnostico_etiologia|default:"-" }}</p>
+        <p><strong>Sinais/Sintomas:</strong> {{ ficha.diagnostico_sinais|default:"-" }}</p>
+    </div>
+</div>
+
+<!-- ORIENTAÇÕES -->
+<div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0"><i class="fas fa-clipboard-list"></i> Orientações e Devolutivas</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>Data:</strong> {{ ficha.data_orientacao|date:"d/m/Y"|default:"-" }}</p>
+        <p>{{ ficha.orientacoes_texto|linebreaks|default:"-" }}</p>
+        <p><strong>Cálculos:</strong> {{ ficha.calculos_observacoes|linebreaks|default:"-" }}</p>
+    </div>
+</div>
+
+<!-- INFO DA FICHA -->
 <div class="card">
     <div class="card-body text-muted">
         <small>
@@ -138,4 +209,5 @@
         </small>
     </div>
 </div>
+
 {% endblock %}

@@ -2,8 +2,9 @@ import os
 import shutil
 from datetime import datetime
 from docx import Document
-from docx.shared import Inches, Pt, RGBColor
+from docx.shared import Inches, Pt, RGBColor, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_TABLE_ALIGNMENT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -29,8 +30,6 @@ def gerar_word(ficha):
     
     # ESTRATÉGIA: Localizar parágrafos específicos e substituir/preencher
     
-    # Contador de parágrafo para navegação
-    para_idx = 0
     for i, para in enumerate(doc.paragraphs):
         texto = para.text.strip()
         
@@ -130,6 +129,53 @@ def gerar_word(ficha):
             run = para.add_run(f"Meta pessoal: {ficha.meta_pessoal}")
             run.font.name = 'Times New Roman'
             run.font.size = Pt(10.5)
+        
+         # DIAGNÓSTICO NUTRICIONAL
+        elif 'Problema:' in texto and 'Etiologia:' in texto:
+            # É a linha "Problema: Etiologia: Sinais/Sintomas:"
+            para.clear()
+            texto_diag = f"Problema: {ficha.diagnostico_problema or ''}\nEtiologia: {ficha.diagnostico_etiologia or ''} \nSinais/Sintomas: {ficha.diagnostico_sinais or ''}"
+            run = para.add_run(texto_diag)
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10.5)
+        
+        # ORIENTAÇÕES E DEVOLUTIVAS
+        elif 'Data da orientação:' in texto:
+            para.clear()
+            data_orient = ficha.data_orientacao.strftime('%d/%m/%Y') if ficha.data_orientacao else ''
+            run = para.add_run(f"Data da orientação: {data_orient}")
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10.5)
+    
+    # PREENCHER CAMPO DE TEXTO DAS ORIENTAÇÕES (logo após os parágrafos)
+    # Procura um parágrafo vazio após "Data da orientação" e preenche
+    encontrou_orientacoes = False
+    for i, para in enumerate(doc.paragraphs):
+        if 'Data da orientação:' in para.text:
+            encontrou_orientacoes = True
+        elif encontrou_orientacoes and not para.text.strip():
+            # Encontrou parágrafo vazio após orientações
+            if ficha.orientacoes_texto:
+                para.add_run(ficha.orientacoes_texto)
+                para.runs[0].font.name = 'Times New Roman'
+                para.runs[0].font.size = Pt(10.5)
+            break
+
+    # PREENCHER TABELA 4: ESTILO DE VIDA
+    if len(doc.tables) >= 4:
+        tabela_estilo = doc.tables[3]  # Tabela 4 (índice 3)
+        
+        # Linha 0: Nível de atividade física
+        if len(tabela_estilo.rows) > 0 and len(tabela_estilo.rows[0].cells) > 1:
+            tabela_estilo.rows[0].cells[1].text = ficha.get_nivel_atividade_fisica_display() if ficha.nivel_atividade_fisica else ''
+        
+        # Linha 1: Qual esporte
+        if len(tabela_estilo.rows) > 1 and len(tabela_estilo.rows[1].cells) > 1:
+            tabela_estilo.rows[1].cells[1].text = ficha.qual_esporte or ''
+        
+        # Linha 2: Frequência
+        if len(tabela_estilo.rows) > 2 and len(tabela_estilo.rows[2].cells) > 1:
+            tabela_estilo.rows[2].cells[1].text = ficha.frequencia_esporte or ''
     
     # PREENCHER TABELA 1: DADOS CLÍNICOS (Sintomas)
     if len(doc.tables) >= 1:
@@ -258,42 +304,7 @@ def gerar_word(ficha):
         # % Gordura (linha 26)
         if len(tabela_antro.rows) > 26 and ficha.percentual_gordura:
             tabela_antro.rows[26].cells[3].text = str(ficha.percentual_gordura)
-    
-    # Adicionar diagnóstico e orientações no final
-    if ficha.diagnostico_problema or ficha.orientacoes_texto:
-        # Adicionar quebra de página
-        doc.add_page_break()
         
-        if ficha.diagnostico_problema:
-            p = doc.add_paragraph()
-            run = p.add_run('Diagnóstico nutricional')
-            run.font.name = 'Times New Roman'
-            run.font.size = Pt(11)
-            run.font.bold = True
-            
-            texto_diag = f"Problema: {ficha.diagnostico_problema}\n"
-            if ficha.diagnostico_etiologia:
-                texto_diag += f"Etiologia: {ficha.diagnostico_etiologia}\n"
-            if ficha.diagnostico_sinais:
-                texto_diag += f"Sinais/Sintomas: {ficha.diagnostico_sinais}"
-            
-            doc.add_paragraph(texto_diag)
-        
-        if ficha.orientacoes_texto:
-            p = doc.add_paragraph()
-            run = p.add_run('Orientações e devolutivas')
-            run.font.name = 'Times New Roman'
-            run.font.size = Pt(11)
-            run.font.bold = True
-            
-            if ficha.data_orientacao:
-                doc.add_paragraph(f"Data da orientação: {ficha.data_orientacao.strftime('%d/%m/%Y')}")
-            
-            doc.add_paragraph(ficha.orientacoes_texto)
-            
-            if ficha.calculos_observacoes:
-                doc.add_paragraph(ficha.calculos_observacoes)
-    
     # Salvar documento
     output_dir = os.path.join(settings.MEDIA_ROOT, 'docs')
     os.makedirs(output_dir, exist_ok=True)
@@ -337,42 +348,20 @@ def gerar_word_basico(ficha):
 
 
 def gerar_pdf(ficha):
-    """Gera PDF simples"""
+    """
+    Gera PDF convertendo o Word (mantém formatação)
+    """
+    # Primeiro gera o Word
+    word_path = gerar_word(ficha)
+    
+    # Define o caminho do PDF
     pdf_dir = os.path.join(settings.MEDIA_ROOT, 'pdfs')
     os.makedirs(pdf_dir, exist_ok=True)
-    
     filename = f'prontuario_{ficha.id}_{ficha.nome.replace(" ", "_")}.pdf'
-    filepath = os.path.join(pdf_dir, filename)
+    pdf_path = os.path.join(pdf_dir, filename)
     
-    doc = SimpleDocTemplate(filepath, pagesize=A4,
-                           topMargin=2*cm, bottomMargin=2*cm,
-                           leftMargin=2*cm, rightMargin=2*cm)
+    # Converte Word para PDF
+    from docx2pdf import convert
+    convert(word_path, pdf_path)
     
-    styles = getSampleStyleSheet()
-    
-    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=16,
-                                textColor=colors.HexColor('#2c3e50'), spaceAfter=20,
-                                alignment=TA_CENTER, fontName='Helvetica-Bold')
-    
-    normal_style = ParagraphStyle('Normal', parent=styles['Normal'], fontSize=10,
-                                  leading=14, spaceAfter=8)
-    
-    story = []
-    
-    story.append(Paragraph("FICHA DE ANAMNESE ALIMENTAR", title_style))
-    story.append(Spacer(1, 0.5*cm))
-    
-    story.append(Paragraph(f"<b>Nome:</b> {ficha.nome}", normal_style))
-    story.append(Paragraph(f"<b>Email:</b> {ficha.email}", normal_style))
-    story.append(Paragraph(f"<b>Peso:</b> {ficha.peso} kg", normal_style))
-    story.append(Paragraph(f"<b>Altura:</b> {ficha.estatura} m", normal_style))
-    story.append(Paragraph(f"<b>IMC:</b> {ficha.imc}", normal_style))
-    
-    story.append(Spacer(1, 1*cm))
-    data_geracao = f"Documento gerado em: {datetime.now().strftime('%d/%m/%Y às %H:%M')}"
-    footer_style = ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, 
-                                  textColor=colors.grey, alignment=TA_CENTER)
-    story.append(Paragraph(data_geracao, footer_style))
-    
-    doc.build(story)
-    return filepath
+    return pdf_path

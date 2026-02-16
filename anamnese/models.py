@@ -129,6 +129,17 @@ class FichaAnamnese(models.Model):
     dc_panturrilha = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, verbose_name="DC Panturrilha (mm)")
     percentual_gordura = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, verbose_name="% Gordura")
     
+    # ========== ESTILO DE VIDA ==========
+    NIVEL_ATIVIDADE_CHOICES = [
+        ('sedentario', 'Sedentário'),
+        ('leve', 'Leve'),
+        ('moderado', 'Moderado'),
+        ('intenso', 'Intenso'),
+    ]
+    nivel_atividade_fisica = models.CharField(max_length=20, choices=NIVEL_ATIVIDADE_CHOICES, blank=True, verbose_name="Nível de Atividade Física")
+    qual_esporte = models.CharField(max_length=200, blank=True, verbose_name="Qual Esporte Pratica")
+    frequencia_esporte = models.CharField(max_length=100, blank=True, verbose_name="Quantas Vezes por Semana")
+    
     # ========== DIAGNÓSTICO NUTRICIONAL ==========
     diagnostico_problema = models.TextField(blank=True, verbose_name="Problema")
     diagnostico_etiologia = models.TextField(blank=True, verbose_name="Etiologia")

@@ -106,6 +106,11 @@ class FichaAnamneseForm(forms.ModelForm):
             'dc_panturrilha': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1', 'placeholder': 'mm'}),
             'percentual_gordura': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1', 'placeholder': '%'}),
             
+            # Estilo de Vida
+            'nivel_atividade_fisica': forms.Select(attrs={'class': 'form-control'}),
+            'qual_esporte': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Musculação, Corrida, Futebol'}),
+            'frequencia_esporte': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 3x por semana, Diariamente'}),
+            
             # Diagnóstico
             'diagnostico_problema': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'diagnostico_etiologia': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
