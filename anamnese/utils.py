@@ -362,6 +362,26 @@ def gerar_pdf(ficha):
     
     # Converte Word para PDF
     from docx2pdf import convert
-    convert(word_path, pdf_path)
-    
+
+    # Em ambientes Windows/Django multithread pode ocorrer o erro
+    # "CoInitialize não foi chamado" ao usar COM (Word). Inicializamos
+    # explicitamente o COM nesta thread quando possível.
+    try:
+        import pythoncom
+    except Exception:
+        pythoncom = None
+
+    if pythoncom:
+        pythoncom.CoInitialize()
+        try:
+            convert(word_path, pdf_path)
+        finally:
+            try:
+                pythoncom.CoUninitialize()
+            except Exception:
+                pass
+    else:
+        # Se pywin32 não estiver instalado, tenta converter normalmente
+        convert(word_path, pdf_path)
+
     return pdf_path
